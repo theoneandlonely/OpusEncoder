@@ -5,12 +5,12 @@ Afterwards it parses these folders and creates .cue-files with the corresponding
 
 - Supported file formats:
 
-- - Input: .wav, .flac
-- - Output: .opus, 256kbit/s VBR
+  - Input: .wav, .flac
+  - Output: .opus, 256kbit/s VBR
 
 - Requirements:
-- - Python >3.6
-- - Opusenc.exe in your environment-variables
+  - Python >3.6
+  - Opusenc.exe in your environment-variables
 
 - Usage:
-- - Just run the script in the folder where your music is, it parses all subfolders and processes them.
+  - Just run the script in the folder where your music is, it parses all subfolders and processes them.
