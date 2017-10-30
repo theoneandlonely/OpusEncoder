@@ -53,6 +53,10 @@ def processFlacs():
                 basename = file[:-5]
                 if not os.path.exists(os.path.join(root, basename + ".opus")):
                     s.add(os.path.join(root, file))
+            if file.endswith(".wav"):
+                basename = file[:-4]
+                if not os.path.exists(os.path.join(root, basename + ".opus")):
+                    s.add(os.path.join(root, file))
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=nrThreads)
     for i in s:
