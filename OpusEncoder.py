@@ -5,6 +5,7 @@ import concurrent.futures
 import sys
 
 nrThreads = 3
+logger = logging.getLogger()
 
 
 def worker(item):
@@ -17,12 +18,20 @@ def worker(item):
     print(F"Pfad: {path}")
     basename = spl[-1:][0][:-5]
     # print(basename)
+    newBasename = os.path.join(path, basename+".flac")
 
-    command = ["opusenc.exe", "--bitrate", "256", os.path.join(path, basename + ".flac"),
+    command = ["opusenc.exe", "--bitrate", "256", newBasename,
                os.path.join(path, basename + ".opus")]
     p = subprocess.Popen(command)
     p.wait()
-    os.remove(os.path.join(path, basename + ".flac"))
+    
+    if os.path.exists(newBasename):
+        if os.stat(newBasename).st_size <= 0:
+            logging.error("Error: {} size <=0".format(newBasename))
+        else:
+            os.remove(newBasename)
+    else:
+        logging.error("Error: {} does not exist".format(newBasename))
 
 
 def renameFlacToOpus():
@@ -107,7 +116,23 @@ def generateCueFiles():
 
 
 def main():
-    sys.stderr = open("logs.txt", "w")
+    error_handler = logging.FileHandler("errorlog.txt")
+    error_handler.setLevel(logging.ERROR)
+    error_handler.setFormatter(logging.Formatter("%(asctime)-15s %(levelname)s %(message)s"))
+
+    # Handler to log messages to file
+    log_handler = logging.FileHandler("log.txt")
+    log_handler.setLevel(logging.INFO)
+    log_handler.setFormatter(logging.Formatter("%(asctime)-15s %(levelname)s %(message)s"))
+
+    # Handler for loging to stdout
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.INFO)
+    stdout_handler.setFormatter(logging.Formatter("%(message)s"))
+
+    logging.basicConfig(level=logging.DEBUG, handlers=[error_handler,
+                                                       log_handler,
+                                                       stdout_handler])
     processFlacs()
     renameFlacToOpus()
     generateCueFiles()
