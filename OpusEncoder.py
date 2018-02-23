@@ -3,6 +3,7 @@ import subprocess
 import chardet
 import concurrent.futures
 import sys
+import logging
 
 nrThreads = 3
 logger = logging.getLogger()
